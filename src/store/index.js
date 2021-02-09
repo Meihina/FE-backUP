@@ -5,11 +5,19 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    isPhoneG : false,
+    totalData : [],
+    totalTags : [],
+    yearPos : [],
+    h : [],
+    witch : 0,
+    isShowList : false
   },
-  mutations: {
-  },
-  actions: {
-  },
-  modules: {
+  getters: {
+    filterTag : (state) => (tag) => {
+      return state.totalData.filter(item => {
+        return item.tags.includes(tag)
+      })
+    }
   }
 })
