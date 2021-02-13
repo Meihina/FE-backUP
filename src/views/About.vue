@@ -1,6 +1,6 @@
 <template>
     <div class="About">
-        <div v-show="this.$store.state.totalData.length !== 0">
+        <div v-show="totalData.length !== 0">
             <v-row
                 justify="center"
                 :style="{marginTop : '30px'}"
@@ -38,7 +38,7 @@
                 justify="center"
                 :style="{marginTop : '10px'}"
             >
-                <v-col cols="10">
+                <!-- <v-col cols="10">
                     <div class="jug description">
                         <div>本人是某工科大学材料学院学生</div>
                         <div>大三开始自学编程</div>
@@ -46,21 +46,24 @@
                         <div>喜欢酒和电子游戏</div>
                         <div>期待与您的共事</div>
                     </div>
-                </v-col>
+                </v-col> -->
             </v-row>
         </div>
     </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-    methods:{
-      jump(url){
-        window.open(url)
-      },
-      qq(){
-        window.location.href = 'tencent://message/?uin=1113022939'
-      }
+    computed: {...mapState({ totalData: state => state.MoudleReq.totalData })},
+    methods: {
+        jump(url){
+            window.open(url)
+        },
+        qq(){
+            window.location.href = 'tencent://message/?uin=1113022939'
+        }
     }
 }
 </script>

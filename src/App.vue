@@ -1,174 +1,127 @@
 <template>
-  <v-app :style="{backgroundColor : 'rgb(251, 251, 251)'}">
-    <div class="fixedWrapper">
-      <div :class="isPhone ? 'baseBar_phone' : 'baseBar'">
-        <v-row justify="center" :style="{height : '100px'}">
-          <v-col cols="9">
-            <div class="avatar">
-              <img src="./assets/avatar.jpg">
+    <v-app :style="{backgroundColor : 'rgb(251, 251, 251)'}">
+        <div class="fixedWrapper">
+            <div :class="isPhone ? 'baseBar_phone' : 'baseBar'">
+                <v-row justify="center" :style="{height : '100px'}">
+                    <v-col cols="9">
+                        <div class="avatar">
+                        <img src="./assets/avatar.jpg">
+                        </div>
+                    </v-col>
+                </v-row>
+
+                <v-row justify="center" :style="{height : '50px'}">
+                    <v-col cols="9">
+                        <div class="name">Kaza</div>
+                    </v-col>
+                </v-row>
+
+                <v-row justify="center" :style="{height : '60px' , marginTop : '20px'}">
+                    <v-col cols="9">
+                        <div class="selction" @click="$router.push('/home')">Home</div>
+                        <div class="selction" @click="$router.push('/articles')">Articles</div>
+                        <div class="selction" @click="$router.push('/tags')">Tags</div>
+                        <div class="selction" @click="$router.push('/about')">About</div>
+                        <v-text-field :style="{color : 'white'}" v-model="search">
+                        <v-icon class="search_icon" slot="append" :style="{color : 'white'}">fas fa-search</v-icon>
+                        </v-text-field>
+                    </v-col>
+                </v-row>
+                <APlayer
+                    :autoplay='isAuto === true'
+                    :volume='0.5'
+                    :music="PlayerList[1]"
+                    :list="PlayerList"
+                    :shuffle='true'
+                    :listFolded="true"
+                />
             </div>
-          </v-col>
-        </v-row>
+        </div>
 
-        <v-row justify="center" :style="{height : '50px'}">
-          <v-col cols="9">
-            <div class="name">Kaza</div>
-          </v-col>
-        </v-row>
+        <div :class="isPhone ? 'content_phone' : 'content'">
+            <div class="load" v-show="this.totalData.length === 0">
+                <v-icon large class="icon_load">fas fa-circle-notch fa-spin</v-icon>
+            </div>
+            <keep-alive>
+                <router-view v-if="$route.meta.keepAlive"></router-view>
+            </keep-alive>
 
-        <v-row justify="center" :style="{height : '60px' , marginTop : '20px'}">
-          <v-col cols="9">
-            <div class="selction" @click="$router.push('/home')">Home</div>
-            <div class="selction" @click="$router.push('/articles')">Articles</div>
-            <div class="selction" @click="$router.push('/tags')">Tags</div>
-            <div class="selction" @click="$router.push('/about')">About</div>
-            <v-text-field :style="{color : 'white'}" v-model="search">
-              <v-icon class="search_icon" slot="append" :style="{color : 'white'}">fas fa-search</v-icon>
-            </v-text-field>
-          </v-col>
-        </v-row>
-        <APlayer
-          :autoplay='isAuto === true'
-          :volume='0.5'
-          :music="PlayerList[1]"
-          :list="PlayerList"
-          :shuffle='true'
-          :listFolded="true"
-        />
-      </div>
-    </div>
-
-    <div :class="isPhone ? 'content_phone' : 'content'">
-      <div class="load" v-show="this.$store.state.totalData.length === 0">
-        <v-icon large class="icon_load">fas fa-circle-notch fa-spin</v-icon>
-      </div>
-      <keep-alive>
-          <router-view v-if="$route.meta.keepAlive"></router-view>
-      </keep-alive>
-
-      <router-view v-if="!$route.meta.keepAlive"></router-view>
-    </div>
-  </v-app>
+            <router-view v-if="!$route.meta.keepAlive"></router-view>
+        </div>
+    </v-app>
 </template>
 
 <script>
 import APlayer from 'vue-aplayer'
+import { setOnresize } from './resize.js'
+import { mapActions, mapState } from 'vuex';
+
+const PlayerList = [
+    {
+        title: 'インスタントヘヴン',
+        artist: 'ナナヲアカリ / Eve',
+        src: 'http://music.163.com/song/media/outer/url?id=866049109.mp3',
+        pic: 'http://p1.music.126.net/zMSJ1Rb6zJhnmKmoQZU-ZQ==/109951163408724555.jpg',
+        theme: 'pink'
+    },
+    {
+        title: 'BE QUIET ROOM',
+        artist: '雨天決行 / らっぷびと',
+        src: 'http://music.163.com/song/media/outer/url?id=1414854415.mp3',
+        pic: 'http://p1.music.126.net/TIYFAxpHrRLDtMo7Wrdrmg==/109951164608595166.jpg',
+        theme: 'blue'
+    },
+    {
+        title: '魔軍',
+        artist: '水夏える',
+        src: 'http://music.163.com/song/media/outer/url?id=536624867.mp3',
+        pic: 'http://p2.music.126.net/UTkxbTFZRutAPD0ld1GKcw==/109951163164735586.jpg',
+        theme: 'red'
+    },
+    {
+        title: 'FREEDOM (Extended Mix)',
+        artist: 'USAO',
+        src: 'http://music.163.com/song/media/outer/url?id=544151217.mp3',
+        pic: 'http://p1.music.126.net/_1QQjxIUMfgMwX2x1vfGhg==/109951163179605612.jpg',
+        theme: 'orange'
+    }
+]
+
 export default {
-  name: 'App',
-  components: {
-    APlayer
-  },
-  data: () => ({
-    isPhone : false,
-    search : '',
-    PlayerList:[
-        {
-          title: 'インスタントヘヴン',
-          artist: 'ナナヲアカリ / Eve',
-          src: 'http://music.163.com/song/media/outer/url?id=866049109.mp3',
-          pic: 'http://p1.music.126.net/zMSJ1Rb6zJhnmKmoQZU-ZQ==/109951163408724555.jpg',
-          theme: 'pink'
-        },
-        {
-          title: 'BE QUIET ROOM',
-          artist: '雨天決行 / らっぷびと',
-          src: 'http://music.163.com/song/media/outer/url?id=1414854415.mp3',
-          pic: 'http://p1.music.126.net/TIYFAxpHrRLDtMo7Wrdrmg==/109951164608595166.jpg',
-          theme: 'blue'
-        },
-        {
-          title: '魔軍',
-          artist: '水夏える',
-          src: 'http://music.163.com/song/media/outer/url?id=536624867.mp3',
-          pic: 'http://p2.music.126.net/UTkxbTFZRutAPD0ld1GKcw==/109951163164735586.jpg',
-          theme: 'red'
-        },
-        {
-          title: 'FREEDOM (Extended Mix)',
-          artist: 'USAO',
-          src: 'http://music.163.com/song/media/outer/url?id=544151217.mp3',
-          pic: 'http://p1.music.126.net/_1QQjxIUMfgMwX2x1vfGhg==/109951163179605612.jpg',
-          theme: 'orange'
+    name: 'App',
+    components: { APlayer },
+    data: () => ({
+        isPhone : false,
+        search : (() => {
+            let keyWord = window.location.href.split('?')[1]
+            if (keyWord) return keyWord.includes('search') ? keyWord.split('=')[1] : ''
+        })(),
+        PlayerList: PlayerList,
+        isAuto: false
+    }),
+    computed: {
+        ...mapActions(['getDatas']),
+        ...mapState({ totalData: state => state.MoudleReq.totalData })
+    },
+    watch: {
+        search: function (newVal) {
+            let that = this
+            return that.$router.push({path:'/search' , query:{search: newVal}})
         }
-      ],
-    isAuto : false
-  }),
-  created(){
-    this.reqHelper.store().then((data) => {
-        [this.$store.state.yearPos , this.$store.state.totalData , this.$store.state.totalTags] = data
-        console.log(data)
-    } , (err) => {
-        console.log(err)
-    })
-  },
-  mounted(){
-    let that = this
-    document.querySelector('#input-6').addEventListener("keydown" , function(event){
-      if(event.keyCode == '13' && that.search !== ''){
-        that.$router.push({path:'/search' , query:{search : that.search}})
-      }
-    })
+    },
+    created() {
+        // this.reqHelper.store().then((data) => {
+        //     [this.$store.state.yearPos , this.$store.state.totalData , this.$store.state.totalTags] = data
+        //     console.log(data)
+        // } , (err) => {
+        //     console.log(err)
+        // })
 
-    let width = document.documentElement.offsetWidth || document.body.offsetWidth
-		if(width < 768){
-        this.isPhone = true
-        this.$store.state.isPhoneG = this.isPhone
+        this.getDatas.then(() => {console.log(this.$store.state.MoudleReq.totalData)})
+    },
+    mounted() {
+        setOnresize(this)
     }
-
-    window.onresize = () => {
-      if(document.documentElement.offsetWidth < 768 || document.body.offsetWidth < 768){
-        this.isPhone = true
-        this.$store.state.isPhoneG = this.isPhone
-      }else{
-        this.isPhone = false
-        this.$store.state.isPhoneG = this.isPhone
-      }
-    }
-
-    console.log(navigator.userAgent)
-    if(
-      navigator.userAgent.indexOf("Edge") > 0 ||
-      navigator.userAgent.indexOf("LBBROWSER") > 0 ||
-      navigator.userAgent.indexOf("msie") > 0){
-          console.log('cut')
-    }else{
-      this.$store.state.isShowList = true
-      window.addEventListener('scroll', () => {
-        if(document.querySelector('body').scrollTop){
-          if(this.$store.state.h.length <= 1){
-            // ...
-          }else if(this.$store.state.h.length === 2){
-            if(this.$store.state.witch !== 1){
-              if(document.querySelector('body').scrollTop - 50 > this.$store.state.h[1][1]){
-                this.$store.state.witch += 1
-              }
-            }
-            if(this.$store.state.witch !== 0){
-              if(document.querySelector('body').scrollTop - 50 < this.$store.state.h[1][1]){
-              this.$store.state.witch -= 1
-            }
-            }
-          } else {
-            if(this.$store.state.witch === 0){
-              if(document.querySelector('body').scrollTop > this.$store.state.h[this.$store.state.witch + 1][1]){
-                this.$store.state.witch += 1
-              }
-            }else if(this.$store.state.witch === this.$store.state.h.length - 1){
-              if(document.querySelector('body').scrollTop < this.$store.state.h[this.$store.state.witch][1]){
-                this.$store.state.witch -= 1
-              }
-            }else{
-              if(document.querySelector('body').scrollTop > this.$store.state.h[this.$store.state.witch + 1][1]){
-                this.$store.state.witch += 1
-              }else if(document.querySelector('body').scrollTop < this.$store.state.h[this.$store.state.witch][1]){
-                this.$store.state.witch -= 1
-              }
-            }
-          }
-        }
-      } , true)
-    }
-  }
 };
 </script>
 

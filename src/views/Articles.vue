@@ -3,24 +3,26 @@
         <v-row
             justify="center"
             :style="{marginTop : '30px'}"
-            v-show="this.$store.state.totalData.length !== 0"
+            v-show="totalData.length !== 0"
         >
             <v-col cols="10">
 
                 <div class="title">Articles</div>
                 <div
-                    :class="$store.state.isPhoneG ? 'art_phone' : 'art'"
-                    v-for="(item , index) in this.$store.state.totalData"
+                    :class="isPhoneG ? 'art_phone' : 'art'"
+                    v-for="(item, index) in totalData"
+                    :key="index"
                 >
                     <div
                         id="year"
-                        v-show="$store.state.yearPos.includes(index)"
+                        v-show="yearPos.includes(parseInt(index))"
                     >
                         {{item.time.slice().split('-')[0]}}
+                        
                     </div>
                     <span id="time">{{item.time}}</span>
                     <span id="title" @click="jump(index)">{{item.title}}</span><br/>
-                    <span v-for="item_tag in item.tags">
+                    <span v-for="(item_tag, index) in item.tags" :key="index">
                         <span @click="jumpTag(item_tag)" class="tag_hold">
                             <v-icon class="tag_icon">mdi-tag</v-icon>
                             <span>{{item_tag}}</span>
@@ -36,15 +38,28 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
+
 export default {
+    computed: {
+        ...mapState({
+            totalData: state => state.MoudleReq.totalData,
+            yearPos: state => state.MoudleReq.yearPos,
+            isPhoneG: state => state.isPhoneG
+        })
+    },
     methods:{
         jump(index){
-            this.$router.push({path:'/paper' , query:{id : this.$store.state.totalData[index]._id}})
+            this.$router.push({path:'/paper' , query:{id : this.totalData[index]._id}})
         },
         jumpTag(tag){
             this.$router.push({path:'/tags' , query:{tag : tag}})
         }
-    }
+    },
+    mounted() {
+        console.log(this.yearPos)
+    },
 }
 </script>
 

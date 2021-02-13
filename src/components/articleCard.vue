@@ -4,7 +4,7 @@
             <v-col cols="10">
                 <div :class="this.$store.state.isPhoneG ? 'article_phone' : 'article'">
                     <h1 @click="JumpToPaper()" class="title">{{title}}</h1>
-                    <div class="tags" v-for="item in tags">
+                    <div class="tags" v-for="(item, index) in tags" :key="index">
 
                         <div @click="jumpTag(item)" class="tag_hold">
                             <v-icon class="tag_icon">mdi-tag</v-icon>

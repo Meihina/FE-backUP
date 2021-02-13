@@ -2,9 +2,9 @@
      <div class="paper">
          <v-row justify="center" :style="{marginTop : '30px'}">
             <v-col cols="10">
-                <div :class="this.$store.state.isPhoneG ? 'article_phone' : 'article'">
+                <div :class="isPhoneG ? 'article_phone' : 'article'">
                     <h1 class="title">{{title}}</h1>
-                    <div class="tags" v-for="item in tags">
+                    <div class="tags" v-for="(item, index) in tags" :key="index">
                         <div @click="jumpTag(item)" class="tag_hold">
                             <v-icon class="tag_icon">mdi-tag</v-icon>
                             <span>{{item}}</span>
@@ -14,7 +14,7 @@
             </v-col>
         </v-row>
 
-        <mavon-editor v-model = "value" :class="this.$store.state.isPhoneG ? 'mavon_phone' : 'mavon'"
+        <mavon-editor v-model = "value" :class="isPhoneG ? 'mavon_phone' : 'mavon'"
             :defaultOpen="'preview'"
             :toolbarsFlag="false"
             :scrollStyle="true"
@@ -25,7 +25,7 @@
         />
 
         <div class="btns">
-            <div v-show="this.$store.state.totalData.length - 1 !== parseInt(article[1])" class="next_icon" @click="Next()">
+            <div v-show="totalData.length - 1 !== parseInt(article[1])" class="next_icon" @click="Next()">
                 Next Post
                 <v-icon
                     large
@@ -45,15 +45,22 @@
                 Prev Post
             </div>
         </div>
-        <list v-show='!this.$store.state.isPhoneG && this.$store.state.isShowList' class="list"></list>
+        <list v-show='!isPhoneG && isShowList' class="list"></list>
      </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import list from '../components/list.vue'
 export default {
     components:{
         list
+    },
+    computed: {
+        ...mapState(['isPhoneG', 'isShowList']),
+        ...mapState({
+            totalData: state => state.MoudleReq.totalData
+        })
     },
     data(){
         return{
@@ -86,9 +93,9 @@ export default {
     methods:{
         getData(){
             this.article = (() => {
-                for(var i in this.$store.state.totalData){
-                    if(this.$route.query.id === this.$store.state.totalData[i]._id){
-                        return [this.$store.state.totalData[i] , i]
+                for(var i in this.totalData){
+                    if(this.$route.query.id === this.totalData[i]._id){
+                        return [this.totalData[i] , i]
                     }
                 }
             })()
@@ -109,13 +116,13 @@ export default {
             })
         },
         Next(){
-            let nextArticle = this.$store.state.totalData[++this.article[1]]
+            let nextArticle = this.totalData[++this.article[1]]
             this.$router.push({path:'/paper' , query:{id : nextArticle._id}})
             this.scroll()
             this.getData()
         },
         Prev(){
-            let prevArticle = this.$store.state.totalData[--this.article[1]]
+            let prevArticle = this.totalData[--this.article[1]]
             this.$router.push({path:'/paper' , query:{id : prevArticle._id}})
             this.scroll()
             this.getData()
@@ -128,7 +135,7 @@ export default {
         }
     },
     mounted(){
-        if(this.$store.state.totalData.length !== 0){
+        if(this.totalData.length !== 0){
             this.scroll()
             this.getData()
         }
@@ -137,7 +144,7 @@ export default {
         $route(){
             this.getData()
         },
-        '$store.state.totalData' : function(){
+        '$store.state.MoudleReq.totalData' : function(){
             this.scroll()
             this.getData()
         }

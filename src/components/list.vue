@@ -2,7 +2,7 @@
     <div id="list_main">
         <div id="list_botton" :class="ispackUp ? 'packUped' : 'notpackUp'" @click="ispackUp = !ispackUp"></div>
         <div id="list">
-            <div v-for="(item , index) in this.$store.state.h">
+            <div v-for="(item, index) in this.$store.state.h" :key="index">
                 <listButton :titleName='item[0]' :offset='item[1]' :index='index'></listButton>
             </div>
         </div>
