@@ -70,13 +70,13 @@ export default {
 
 <style lang='scss' scoped>
 .About{
-  animation: fadeIn 0.5s;
-  animation-fill-mode: both;
+    animation: fadeIn 0.5s;
+    animation-fill-mode: both;
 }
 
 .blank{
-  width: 100%;
-  height: 100px;
+    width: 100%;
+    height: 100px;
 }
 
 .title{

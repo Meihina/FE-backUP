@@ -11,7 +11,7 @@
 
 <script>
 export default {
-    props:['titleName' , 'offset' , 'index'],
+    props:['titleName', 'offset', 'index'],
     data(){
         return{
             height : null,

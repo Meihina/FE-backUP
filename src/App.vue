@@ -42,10 +42,10 @@
             <div class="load" v-show="this.totalData.length === 0">
                 <v-icon large class="icon_load">fas fa-circle-notch fa-spin</v-icon>
             </div>
+
             <keep-alive>
                 <router-view v-if="$route.meta.keepAlive"></router-view>
             </keep-alive>
-
             <router-view v-if="!$route.meta.keepAlive"></router-view>
         </div>
     </v-app>
@@ -110,13 +110,6 @@ export default {
         }
     },
     created() {
-        // this.reqHelper.store().then((data) => {
-        //     [this.$store.state.yearPos , this.$store.state.totalData , this.$store.state.totalTags] = data
-        //     console.log(data)
-        // } , (err) => {
-        //     console.log(err)
-        // })
-
         this.getDatas.then(() => {console.log(this.$store.state.MoudleReq.totalData)})
     },
     mounted() {

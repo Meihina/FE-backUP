@@ -2,31 +2,27 @@
     <div class="home">
         <div v-for="(item, index) in showData" :key="index">
             <div v-show="index === 0" class = 'head'>Recent Articles</div>
-                <Acard 
-                    :index = "index + (page - 1) * 6" 
-                    :title = "item.title" 
-                    :context = "item.article" 
-                    :tags = 'item.tags' 
-                    :id = 'item._id' 
+                <Acard
+                    :index = "index + (page - 1) * 10"
+                    :title = "item.title"
+                    :context = "item.article"
+                    :tags = 'item.tags'
+                    :id = 'item._id'
                     :time = 'item.time'
                 />
             <div :class="index !== (length - 1) ? 'dispatch_line' : ''"></div>
         </div>
-
-        <div class="blank"></div>
-        
+        <div class="blank" />
         <div class="text-center" v-show="totalData.length !== 0">
             <v-pagination
-                v-model="page"
-                :length="Math.ceil(totalData.length / 6)"
-                circle
                 dark
+                circle
+                v-model="page"
                 class="pagebtn"
+                :length="Math.ceil(totalData.length / 10)"
             />
         </div>
-
-        <div class="blank"></div>
-
+        <div class="blank" />
     </div>
 </template>
 
@@ -40,8 +36,8 @@ export default {
     data() {
         return {
             length: 0,
-            page : 1,
-            showData : []
+            page: 1,
+            showData: []
         }
     },
     computed: {
@@ -49,20 +45,34 @@ export default {
             totalData: state => state.MoudleReq.totalData
         }),
     },
+    methods: {
+        MovingToTop(now, final) {
+            let speed = Math.floor((now - final) / 12), lastNow = now
+            window.timer = setInterval(() => {
+                if (Math.abs(lastNow - final) < 50) {
+                    clearInterval(window.timer)
+                    document.querySelector('Body').scrollTop = 0
+                } else {
+                    lastNow -= speed
+                    document.querySelector('Body').scrollTop = lastNow
+                }
+            }, 16.67)
+        }
+    },
     watch: {
-        page(val){
+        page(val) {
             let arr = this.totalData.slice()
-            this.showData = arr.splice((this.page - 1) * 6 , 6)
-            document.querySelector('Body').scrollTop = 0
+            this.showData = arr.splice((this.page - 1) * 10 , 10)
+            this.MovingToTop(document.querySelector('Body').scrollHeight, 0)
         },
-        '$store.state.MoudleReq.totalData' : function(val){
-            let arr = this.totalData.slice(0 , 6)
+        '$store.state.MoudleReq.totalData': function(val) {
+            let arr = this.totalData.slice(0, 10)
             this.showData = arr
         }
     },
     mounted() {
         this.length = this.totalData.length
-        let arr = this.totalData.slice(0 , 6)
+        let arr = this.totalData.slice(0, 6)
         this.showData = arr
     }
 }
