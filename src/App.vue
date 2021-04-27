@@ -1,7 +1,14 @@
 <template>
     <v-app :style="{backgroundColor : 'rgb(251, 251, 251)'}">
         <div class="fixedWrapper">
+            <div :style="isPhone ? {display: 'none'} : {}" class="all_screen" @click="hide_baseBar">
+              <v-icon :style="{color: 'white', fontSize: '16px'}" class="fa-arrows-alt">fa-arrows-alt</v-icon>
+            </div>
+            <div :style="isPhone ? {display: 'none'} : { left: '35px' }" class="all_screen">
+              <v-icon :style="{color: 'white', fontSize: '13px'}" class="fa-link">fa-link</v-icon>
+            </div>
             <div :class="isPhone ? 'baseBar_phone' : 'baseBar'">
+
                 <v-row justify="center" :style="{height : '100px'}">
                     <v-col cols="9">
                         <div class="avatar">
@@ -39,6 +46,7 @@
         </div>
 
         <div :class="isPhone ? 'content_phone' : 'content'">
+          <div class="content_width" :style="{ width: '95%' }">
             <div class="load" v-show="this.totalData.length === 0">
                 <v-icon large class="icon_load">fas fa-circle-notch fa-spin</v-icon>
             </div>
@@ -47,6 +55,7 @@
                 <router-view v-if="$route.meta.keepAlive"></router-view>
             </keep-alive>
             <router-view v-if="!$route.meta.keepAlive"></router-view>
+          </div>
         </div>
     </v-app>
 </template>
@@ -114,6 +123,19 @@ export default {
     },
     mounted() {
         setOnresize(this)
+    },
+    methods: {
+      hide_baseBar() {
+        if (document.querySelector('.baseBar').style.display !== 'none') {
+          document.querySelector('.baseBar').style.display = 'none'
+          document.querySelector('.content').style.width = '100%'
+          document.querySelector('.content_width').style.width = '70%'
+        } else {
+          document.querySelector('.baseBar').style.display = 'block'
+          document.querySelector('.content').style.width = 'calc(100% - 277px)'
+          document.querySelector('.content_width').style.width = '95%'
+        }
+      }
     }
 };
 </script>
@@ -155,6 +177,29 @@ input#input-6 {
     }
 }
 
+.all_screen{
+  z-index: 10000;
+  position: fixed;
+  display: inline-block;
+  top: 10px;
+  left: 10px;
+  background-color: rgb(54, 54, 54);
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  .fa-arrows-alt{
+    position: relative;
+    top: -3px;
+    left: 2px;
+  }
+  .fa-link{
+    position: relative;
+    top: -2px;
+    left: 3px;
+  }
+}
+
 body{
   overflow-x: hidden;
   .content{
@@ -165,6 +210,8 @@ body{
     white-space:normal;
     word-break:break-all;
     word-wrap:break-word;
+    display: flex;
+    justify-content: center;
     .load{
       width: 100%;
       display: flex;

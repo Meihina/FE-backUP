@@ -13,6 +13,7 @@
                     <div @click="JumpToPaper()" class="content_article">{{context.split('#').join('')}}</div>
                     <div class="time">posted at {{time}}</div>
                 </div>
+                
             </v-col>
         </v-row>
     </div>

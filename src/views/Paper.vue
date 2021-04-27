@@ -4,10 +4,18 @@
             <v-col cols="10">
                 <div :class="isPhoneG ? 'article_phone' : 'article'">
                     <h1 class="title">{{title}}</h1>
-                    <div class="tags" v-for="(item, index) in tags" :key="index">
-                        <div @click="jumpTag(item)" class="tag_hold">
-                            <v-icon class="tag_icon">mdi-tag</v-icon>
-                            <span>{{item}}</span>
+                    
+                    <div class="tags_and_buttons">
+                        <div class="contorl_buttons">
+                            
+                        </div>
+                        <div>
+                            <div class="tags" v-for="(item, index) in tags" :key="index">
+                                <div @click="jumpTag(item)" class="tag_hold">
+                                    <v-icon class="tag_icon">mdi-tag</v-icon>
+                                    <span>{{item}}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -177,6 +185,7 @@ export default {
 }
 
 .article{
+    position: relative;
     .title{
         text-align: center;
         font-size: 38px !important;
@@ -189,25 +198,32 @@ export default {
             text-shadow: 0px 0px 3px rgb(221, 221, 221);
         }
     }
-    .tags{
-        margin-top: 15px;
-        float: right;
-        font-size: 14px;
-        .tag_hold{
-            display : inline;
-            margin-left : 8px;
-            transition: 0.2s;
-            &:hover{
-                cursor: pointer;
-                color: rgb(8, 15, 143);
-                .tag_icon{
+    .tags_and_buttons {
+        display: flex;
+        justify-content: space-between;
+        .tags{
+            margin-top: 15px;
+            float: right;
+            font-size: 14px;
+            .tag_hold{
+                display : inline;
+                margin-left : 8px;
+                transition: 0.2s;
+                &:hover{
+                    cursor: pointer;
                     color: rgb(8, 15, 143);
+                    .tag_icon{
+                        color: rgb(8, 15, 143);
+                    }
+                }
+                .tag_icon{
+                    transform: scale(0.7);
+                    color: rgb(73, 73, 73);
                 }
             }
-            .tag_icon{
-                transform: scale(0.7);
-                color: rgb(73, 73, 73);
-            }
+        }
+        .contorl_buttons{
+            margin-top: 15px;
         }
     }
 }
@@ -224,6 +240,9 @@ export default {
         &:hover{
             text-shadow: 0px 0px 3px rgb(221, 221, 221);
         }
+    }
+    .contorl_buttons{
+        display: none;
     }
     .tags{
         margin-top: 15px;
