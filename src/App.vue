@@ -46,7 +46,7 @@
         </div>
 
         <div :class="isPhone ? 'content_phone' : 'content'">
-          <div class="content_width" :style="{ width: '95%' }">
+          <div class="content_width" :style="{ width: '100%' }">
             <div class="load" v-show="this.totalData.length === 0">
                 <v-icon large class="icon_load">fas fa-circle-notch fa-spin</v-icon>
             </div>
@@ -133,7 +133,7 @@ export default {
         } else {
           document.querySelector('.baseBar').style.display = 'block'
           document.querySelector('.content').style.width = 'calc(100% - 277px)'
-          document.querySelector('.content_width').style.width = '95%'
+          document.querySelector('.content_width').style.width = '100%'
         }
       }
     }
